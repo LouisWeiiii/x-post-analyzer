@@ -897,3 +897,39 @@ def analyze_with_positioning(posts, positioning):
         print(f"  🔴 多数发帖内容与账号定位方向不匹配。")
     else:
         print(f"  {aligned_pct:.0f}% 内容与定位方向匹配 ✓ 基本合格。")
+
+
+# ═══════════════════════════════════════════════════
+#  CLI 入口（python analyze.py data.csv）
+# ═══════════════════════════════════════════════════
+
+if __name__ == '__main__':
+    import sys, os, csv
+
+    if len(sys.argv) < 2:
+        print("用法: python analyze.py <csv文件路径> [--from-skill]")
+        print()
+        print("  直接分析:")
+        print("    python analyze.py ~/Downloads/x_data.csv")
+        print()
+        print("  作为 AI Agent Skill 使用（放在 skills/ 文件夹下）:")
+        print("    from analyze import analyze")
+        print("    详见同目录下的 SKILL.md")
+        print()
+        print(f"  文件: {os.path.abspath(__file__)}")
+        sys.exit(1)
+
+    path = sys.argv[1]
+    if not os.path.exists(path):
+        print(f"❌ 文件不存在: {path}")
+        sys.exit(1)
+
+    with open(path, encoding='utf-8-sig') as f:
+        posts = list(csv.DictReader(f))
+
+    # 检查是否有定位参数
+    if '--from-skill' in sys.argv:
+        # AI Agent 通过 skill 调用时，由 agent 自己决定用 analyze 还是 analyze_with_positioning
+        analyze(posts)
+    else:
+        analyze(posts)
